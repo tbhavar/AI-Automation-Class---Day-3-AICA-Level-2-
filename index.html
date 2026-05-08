@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Class - Day 3 | Level 2 Notes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #f1f1f1;
+    line-height: 1.6;
+    padding: 20px;
+  }
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    background: #1e1e2f;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    overflow: visible; /* changed from hidden so sticky works */
+  }
+
+  /* ✅ FROZEN HEADER */
+  header {
+    background: linear-gradient(90deg, #ff512f, #dd2476);
+    padding: 12px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  }
+  header h1 {
+    font-size: 1.3em;       /* reduced title size */
+    letter-spacing: 0.5px;
+  }
+  header p {
+    margin-top: 2px;
+    font-size: 0.8em;       /* reduced subtitle size */
+    opacity: 0.9;
+  }
+
+  /* ✅ FROZEN NAV RIBBON */
+  nav {
+    background: #111827;
+    padding: 8px 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    position: sticky;
+    top: 62px;              /* sits right below the sticky header */
+    z-index: 150;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  }
+  nav a {
+    color: #ffcc70;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    border-radius: 6px;
+    transition: 0.3s;
+  }
+  nav a:hover {
+    background: #ffcc70;
+    color: #111;
+  }
+
+  section {
+    padding: 30px;
+    border-bottom: 1px solid #333;
+    scroll-margin-top: 120px; /* ensures anchor scroll lands below sticky bars */
+  }
+  section h2 {
+    color: #ffcc70;
+    margin-bottom: 15px;
+    border-left: 5px solid #ff512f;
+    padding-left: 12px;
+  }
+  section h3 {
+    color: #7ee8fa;
+    margin: 18px 0 10px;
+  }
+  ol, ul { margin-left: 25px; margin-bottom: 15px; }
+  li { margin-bottom: 8px; }
+  code, pre {
+    background: #0d1117;
+    color: #7ee8fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Consolas', monospace;
+  }
+  pre {
+    padding: 15px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border-left: 4px solid #ffcc70;
+    margin: 10px 0;
+  }
+  a.link {
+    color: #7ee8fa;
+    text-decoration: none;
+    word-break: break-all;
+  }
+  a.link:hover { text-decoration: underline; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    background: #111827;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+  th { background: #ff512f; color: #fff; }
+  tr:hover { background: #2a2a3f; }
+  .usecase {
+    background: #111827;
+    border-left: 5px solid #7ee8fa;
+    padding: 12px 18px;
+    margin: 10px 0;
+    border-radius: 8px;
+  }
+  .copy-btn {
+    background: #ffcc70;
+    color: #111;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    float: right;
+    font-weight: bold;
+  }
+  .copy-btn:hover { background: #ff512f; color: #fff; }
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: #0d1117;
+    color: #aaa;
+    font-size: 0.9em;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  /* ✅ BACK-TO-TOP FLOATING BUTTON */
+  #backToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+    color: #fff;
+    border: none;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 1.6em;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    display: none;                /* hidden by default */
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s, background 0.3s;
+    z-index: 999;
+  }
+  #backToTop:hover {
+    transform: translateY(-4px) scale(1.08);
+    background: linear-gradient(135deg, #dd2476, #ff512f);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🚀 AI Automation Class – Day 3 (Level 2)</h1>
+    <p>Python Setup · Libraries · Use Cases · Troubleshooting</p>
+  </header>
+
+  <nav>
+    <a href="#install-python">Install Python</a>
+    <a href="#install-libraries">Install Libraries</a>
+    <a href="#upgrade-libraries">Upgrade Libraries</a>
+    <a href="#use-cases">Use Cases</a>
+    <a href="#errors">Common Errors</a>
+  </nav>
+
+  <!-- INSTALL PYTHON -->
+  <section id="install-python">
+    <h2>🐍 Install Python</h2>
+    <ol>
+      <li>Download Python using this Link:
+        <br><a class="link" href="https://www.python.org/ftp/python/3.14.4/python-3.14.4-amd64.exe" target="_blank">
+        https://www.python.org/ftp/python/3.14.4/python-3.14.4-amd64.exe</a>
+      </li>
+      <li>During installation, <b>tick the check-boxes</b> for:
+        <ul>
+          <li>✅ Admin Access</li>
+          <li>✅ Add Python to PATH</li>
+        </ul>
+        (Both appear on the 1st screen pop-up of the Python installation window.)
+      </li>
+      <li>To check your version & libraries, open Command Prompt (press <code>Windows + R</code>, then type <code>cmd</code>).</li>
+      <li>Then paste the command below:
+        <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button>python --version && pip list</pre>
+      </li>
+    </ol>
+  </section>
+
+  <!-- INSTALL LIBRARIES -->
+  <section id="install-libraries">
+    <h2>📦 Install Libraries</h2>
+    <p>Use this single PIP command to install multiple libraries at once:</p>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button>pip install pypdf PyMuPDF pdfplumber pdfminer.six pandas openpyxl numpy python-docx reportlab requests beautifulsoup4 lxml selenium webdriver-manager watchdog psutil pillow customtkinter tabula-py camelot-py[cv] openai google-generativeai tqdm regex python-dateutil pytz xlrd pandas matplotlib seaborn soupsieve tzdata cycler kiwisolver fonttools packaging pyparsing contourpy et-xmlfile jdcal olefile six google-generativeai python-dotenv</pre>
+  </section>
+
+  <!-- UPGRADE LIBRARIES -->
+  <section id="upgrade-libraries">
+    <h2>⬆️ Upgrade Libraries</h2>
+    <p>Use this single PIP command to upgrade all libraries at once:</p>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button>pip install --upgrade pypdf PyMuPDF pdfplumber pdfminer.six pandas openpyxl numpy python-docx reportlab requests beautifulsoup4 lxml selenium webdriver-manager watchdog psutil pillow customtkinter tabula-py camelot-py[cv] openai google-generativeai tqdm regex python-dateutil pytz xlrd pandas matplotlib seaborn soupsieve tzdata cycler kiwisolver fonttools packaging pyparsing contourpy et-xmlfile jdcal olefile six google-generativeai python-dotenv</pre>
+  </section>
+
+  <!-- USE CASES -->
+  <section id="use-cases">
+    <h2>💡 Use Case History</h2>
+
+    <div class="usecase">
+      <h3>Use Case 1: PDF Automation using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9aa51-c3f8-83e8-970f-11523afc850e" target="_blank">Open Use Case 1 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 2: Building a Simple Redaction App using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9aa7e-a840-83e8-a90a-ae6843f357ae" target="_blank">Open Use Case 2 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 3: Building an Advanced Auto Redaction App using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9aab4-d6f0-83e8-bfe3-8f4b786fddd9" target="_blank">Open Use Case 3 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 4: Automation of Documentation using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9ab25-393c-83e8-8d8e-66b2315c2320" target="_blank">Open Use Case 4 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 5: Creating White-Labelled GPT / LLM</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9a6e5-fd00-83e8-86c4-5b07c6c7f2b3" target="_blank">Open Use Case 5 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 6: Downloading All Documents in a Particular Link using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9a783-4088-83e8-adb1-8789e0d892ab" target="_blank">Open Use Case 6 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 7: GSTIN Taxpayer Fetcher using Python</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9a842-4bcc-83e8-9971-3749385a88e8" target="_blank">Open Use Case 7 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 8: Converting Bank Statement from PDF to Excel</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9a86d-8000-83e8-a743-09e8fca708fa" target="_blank">Open Use Case 8 →</a>
+    </div>
+
+    <div class="usecase">
+      <h3>Use Case 9: System Activity & File Monitor</h3>
+      <a class="link" href="https://chatgpt.com/share/69e9a8ae-7af0-83e8-a01a-8e0ca6fb91f1" target="_blank">Open Use Case 9 →</a>
+    </div>
+  </section>
+
+  <!-- ERRORS -->
+  <section id="errors">
+    <h2>⚠️ Common Types of Errors & Resolutions</h2>
+
+    <p><b>Note:</b> Libraries built for newer Python versions may not be compatible with older Python environments. However, libraries developed for older versions generally remain compatible with newer Python versions, subject to deprecation risks.</p>
+    <p style="margin-top:10px;">To diagnose errors effectively, it is advisable to execute the program using the native Python IDE (IDLE) or terminal, as it provides clearer and more granular error traces.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Error Type</th>
+          <th>Cause</th>
+          <th>Resolution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Module Not Found Error</td>
+          <td>Required library is not installed in the environment</td>
+          <td>Install using <code>pip install package_name</code></td>
+        </tr>
+        <tr>
+          <td>Import Error / Version Conflict</td>
+          <td>Incompatible or incorrect library version</td>
+          <td>Upgrade/install a compatible version using the single upgrade pip command (see above)</td>
+        </tr>
+        <tr>
+          <td>File Not Found Error</td>
+          <td>File path is incorrect or file does not exist</td>
+          <td>Verify file location, spelling, and ensure correct relative/absolute path is used</td>
+        </tr>
+        <tr>
+          <td>Permission Error</td>
+          <td>File is open in another application or access is restricted</td>
+          <td>Close the file, check permissions, or run the program with appropriate access rights</td>
+        </tr>
+        <tr>
+          <td>Indentation Error</td>
+          <td>Improper indentation or inconsistent spacing</td>
+          <td>Copy-paste code from AI platform as-is into the Python file; do not accidentally press any key that disturbs indentation</td>
+        </tr>
+        <tr>
+          <td>Key Error</td>
+          <td>Referencing a column or key that does not exist</td>
+          <td>Check column names using <code>df.columns</code> and ensure exact match (case-sensitive)</td>
+        </tr>
+        <tr>
+          <td>Value Error</td>
+          <td>Incorrect data format or invalid value passed to a function</td>
+          <td>Validate and clean input data before processing</td>
+        </tr>
+        <tr>
+          <td>Type Error</td>
+          <td>Operation performed on incompatible data types</td>
+          <td>Check and convert data types appropriately before performing operations</td>
+        </tr>
+        <tr>
+          <td>Authentication Error (API Key Issue)</td>
+          <td>Missing or invalid API key for external services</td>
+          <td>Set correct API key in environment variables or configuration file</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    © AI Automation Class – Day 3 Level 2 | Prepared for Learning Purposes
+  </footer>
+</div>
+
+<!-- ✅ BACK TO TOP BUTTON -->
+<button id="backToTop" title="Back to Top" onclick="scrollToTop()">⬆️</button>
+
+<script>
+  // Copy-to-clipboard for code blocks
+  function copyCode(btn){
+    const pre = btn.parentElement;
+    const text = pre.innerText.replace('Copy','').trim();
+    navigator.clipboard.writeText(text).then(()=>{
+      btn.innerText = '✅ Copied!';
+      setTimeout(()=> btn.innerText='Copy', 2000);
+    });
+  }
+
+  // Show/Hide the Back-to-Top button
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backBtn.style.display = 'flex';
+    } else {
+      backBtn.style.display = 'none';
+    }
+  });
+
+  // Smooth scroll to top
+  function scrollToTop(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
